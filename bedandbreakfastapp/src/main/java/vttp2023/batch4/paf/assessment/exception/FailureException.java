@@ -1,4 +1,4 @@
-package vttp2023.batch4.paf.Exception;
+package vttp2023.batch4.paf.assessment.exception;
 
 public class FailureException extends Exception {
     

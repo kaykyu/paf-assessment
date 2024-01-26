@@ -68,16 +68,10 @@ public class ListingsService {
 
 		User user = new User(booking.getEmail(), booking.getName());
 
-		try {
-
 		if (bookingRepo.userExists(booking.getEmail()).isEmpty())
 			bookingRepo.newUser(user);
 
-			bookingRepo.newBookings(booking);
-
-		} catch (FailureException e) {
-			throw new FailureException(e.getMessage());
-		}
+		bookingRepo.newBookings(booking);
 	}
 
 }

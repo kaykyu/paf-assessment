@@ -29,7 +29,10 @@ public class ListingsRepository {
 	 * inside this comment block
 	 * 
 	 * db.listings.distinct("address.suburb",
-	 * {"address.suburb": {$nin: ["", null]}})
+	 * {$and: [
+	 * {"address.country": {$regex: "australia", $options: "i"}},
+	 * {"address.suburb": {$nin: ["", null]}}]
+	 * })
 	 */
 	public List<String> getSuburbs(String country) {
 		Query query = new Query(Criteria.where("address.suburb").nin("", null)

@@ -1,0 +1,50 @@
+2.1:
+mongoimport --uri mongodb://mongo:{password}@roundhouse.proxy.rlwy.net:59653/bedandbreakfast --authenticationDatabase=admin --collection listings_and_reviews --file data/listings.json
+
+
+2.2:
+db.listings_and_reviews.aggregate([
+{ $match: {"address.country": {$regex: "australia", $options: "i" }}},
+{ $out: "listings" }]);
+
+
+2.3:
+db.listings.aggregate([
+{ $unwind: "$reviews" },
+{ $project: {
+        _id: "$reviews._id",
+        date: "$reviews.date",
+        listing_id: "$reviews.listing_id",
+        reviewer_name: {
+            $replaceAll: {
+                input: "$reviews.reviewer_name", find: ",", replacement: ""}
+        },
+        comments: {
+            $replaceAll: {
+                input: "$reviews.comments", find: "\n", replacement: ""}
+        }
+    }
+},
+{ $project: {
+        date: 1,
+        listing_id: 1,
+        reviewer_name: 1,
+        comments: {
+            $replaceAll: {
+                input: "$comments", find: "\r", replacement: ""}
+        }
+    }
+},
+{ $out: "reviews"}]);
+
+
+2.4:
+db.listings.updateMany(
+    {},
+    {$unset: {"reviews": 1}},
+    {multi: true}
+);
+
+
+2.5:
+mongoexport --uri mongodb://mongo:{password}@roundhouse.proxy.rlwy.net:59653/bedandbreakfast --authenticationDatabase=admin -c reviews --type=csv --fields date,listing_id,reviewer_name,comments --out reviews.csv

@@ -26,7 +26,6 @@ import vttp2023.batch4.paf.assessment.models.Accommodation;
 import vttp2023.batch4.paf.assessment.models.Bookings;
 import vttp2023.batch4.paf.assessment.services.ListingsService;
 import vttp2023.batch4.paf.assessment.Utils;
-import vttp2023.batch4.paf.assessment.exception.FailureException;
 
 @Controller
 @RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -103,7 +102,7 @@ public class BnBController {
 			listingsSvc.createBooking(booking);
 			return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(JsonObject.EMPTY_JSON_OBJECT.toString());
 
-		} catch (FailureException e) {
+		} catch (Exception e) {
 
 			JsonObject result = Json.createObjectBuilder()
 					.add("mesage", e.getMessage())
